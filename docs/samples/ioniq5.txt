@@ -1,0 +1,71 @@
+# sample: sandbox run of the kit against real stock files from this unit; files the original report did not collect are left out
+leafia-report 1
+date Mon Oct 19 14:58:00 CDT 2026
+prop ro.build.product=NEEV.USA.0000.V015.012.260507
+prop ro.build.product2=NEEV.USA.S5W_M.V015.012.260507
+prop ro.build.branch=PRD-DOLPHIN_V056_251119_NA_26Y_MR1
+prop ro.build.id=KVT49L
+prop ro.build.version.release=4.4.2
+prop ro.build.version.incremental=eng.vmadmin.20260507.094910
+prop ro.build.date.utc=1778115005
+prop ro.build.fingerprint=ecohmc/wp_daudioplus_ecohmc_us/wp_daudioplus_ecohmc_us:4.4.2/KVT49L/eng.vmadmin.20260507.094910:user/dev-keys
+prop ro.product.device=wp_daudioplus_neev_us
+prop ro.product.name=wp_daudioplus_neev_us
+prop ro.product.model=wp_daudioplus
+prop ro.product.board=tcc803x_android_lcn
+prop ro.board.platform=tcc803x
+prop ro.hardware=tcc803x
+prop ro.boot.hardware=
+prop ro.product.opt.stepofspec=105
+prop ro.product.vehicleinfo=NE1AE.S5BM
+prop ro.product.vcrm.model=neev
+prop ro.product.opt.hud.artist=true
+prop ro.product.opt.vehicletype=2
+prop ro.product.sop_year=2021
+prop ro.product.locale.region=US
+prop ro.mobis.onebindir=neev_us
+prop ro.mobis.targetdir=/system/onebin/neev_us
+pkg usb-handler
+file /system/app/HKMC_GPM.apk md5=2e9a5e738fffad4bca38421971a07364
+file /system/app/HKMC_GPM.odex md5=6e67470f8ccd5afcd6c1408ac3fd9459
+file /system/app/HKMC_DiPO.apk md5=1b080aa15a39acc19d04ff56d731f484
+file /system/app/HKMC_DiPO.odex md5=460433b8ec27354f5b787d2382e7efaf
+file /system/app/Iap2ServerApp.apk md5=fde208439f993986a60396e759797a01
+file /system/app/Iap2ServerApp.odex md5=43c40662352937dd2c25a154dfa60b9d
+file /system/app/HKMC_Navi_ExSL.apk md5=19559e742b1d21550aa8f0324e8e6d36
+file /system/app/HKMC_Navi_ExSL.odex md5=0617cbf37079ec5c2e6408f1fb7862b9
+file /system/lib/libautoreceiver_infobank.so md5=48ee793af8b86052503b8c952b034731
+file /system/lib/libCarPlayCore.so md5=d3a47296437df56fb1ffc7ac3dfca4cb
+file /system/lib/libCarPlayAudio.so md5=fca4c75b1ae39a88b83912f083ce7dda
+file /system/lib/libCarPlayUtils.so md5=246865164c625a55705d5239577b7c89
+SPOT carplay-audio-formats off=0x74 len=38 status=original
+SPOT carplay-audio-formats off=0x3c22 len=36 status=original
+SPOT carplay-audio-formats off=0x3cf0 len=50 status=original
+SPOT carplay-audio-formats off=0x3f42 len=36 status=original
+SPOT carplay-audio-formats off=0x89d0 len=206 status=original
+RESULT carplay-audio-formats status=PATCHABLE file=/system/lib/libCarPlayAudio.so size=38312 md5=fca4c75b1ae39a88b83912f083ce7dda
+SPOT carplay-core-wifi off=0xfbaa len=36 status=original
+RESULT carplay-core-wifi status=PATCHABLE file=/system/lib/libCarPlayCore.so size=128952 md5=d3a47296437df56fb1ffc7ac3dfca4cb
+SPOT carplay-utils-converter off=0x4544 len=264 status=original
+SPOT carplay-utils-converter off=0x46b8 len=40 status=original
+SPOT carplay-utils-converter off=0x470c len=40 status=original
+SPOT carplay-utils-converter off=0x4754 len=40 status=original
+SPOT carplay-utils-converter off=0x4970 len=40 status=original
+RESULT carplay-utils-converter status=PATCHABLE file=/system/lib/libCarPlayUtils.so size=469316 md5=246865164c625a55705d5239577b7c89
+api updateTBTInfo=1
+api updateTBTSubInfo=1
+api updateTBTSubInfo2C=1
+api updateTBTTrapInfo=1
+api updateTPTurnList=1
+api updateTPTurnListNew=1
+api updateTPCrossroadName=1
+api updateTPFlexibleDestinationName=1
+api updateLaneInfo=1
+api updateOperationStatus=1
+api responseNaviAliveStatus=1
+permfile android.hardware.wifi=0
+permfile com.hkmc.software.connectivity.carplay_wireless=0
+permfile com.hkmc.software.connectivity.androidauto_wireless=0
+feature com.hkmc.software.wifi.module
+feature com.hkmc.software.connectivity.carplay
+end

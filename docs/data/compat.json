@@ -1,0 +1,70 @@
+{
+  "updated": "2026-10-19",
+  "repo": "VysseCodes/HMG-Leafia-Plus",
+  "variants": [
+    {
+      "id": "kia-ev6-us-260507",
+      "name": "Kia EV6",
+      "region": "US / Canada",
+      "chip": "TCC803x",
+      "product_prefix": "CVEV.",
+      "firmware": "V015.012.260507",
+      "status": "supported",
+      "verified": ["Wireless CarPlay (music, Siri, calls)", "Wireless Android Auto", "Turn-by-turn on cluster and HUD", "Wired CarPlay unchanged"],
+      "stock": {
+        "/system/app/HKMC_GPM.apk": "c155b0fb97384e645987dc1bd0f85922",
+        "/system/app/HKMC_GPM.odex": "96cd7c27a9db19acb3900f21f57ea9f0",
+        "/system/app/HKMC_DiPO.apk": "01446fb79dc4fcfc826271ba18158fa4",
+        "/system/app/HKMC_DiPO.odex": "a565e180fdb0b73d6520f28c91cdba63",
+        "/system/app/Iap2ServerApp.apk": "fde208439f993986a60396e759797a01",
+        "/system/app/Iap2ServerApp.odex": "03950e4b691f846e5478a5a69818c65e",
+        "/system/app/HKMC_Navi_ExSL.apk": "19559e742b1d21550aa8f0324e8e6d36",
+        "/system/app/HKMC_Navi_ExSL.odex": "9cf41f78ce312b3762b354714d12eec3",
+        "/system/lib/libautoreceiver_infobank.so": "48ee793af8b86052503b8c952b034731"
+      }
+    },
+    {
+      "id": "hyundai-ioniq5-us-260507",
+      "name": "Hyundai Ioniq 5",
+      "region": "US",
+      "chip": "TCC803x",
+      "product_prefix": "NEEV.",
+      "firmware": "V015.012.260507",
+      "status": "supported",
+      "verified": ["Install verified on a real unit", "Same code as the EV6 build"],
+      "stock": {
+        "/system/app/HKMC_GPM.apk": "2e9a5e738fffad4bca38421971a07364",
+        "/system/app/HKMC_GPM.odex": "6e67470f8ccd5afcd6c1408ac3fd9459",
+        "/system/app/HKMC_DiPO.apk": "1b080aa15a39acc19d04ff56d731f484",
+        "/system/app/HKMC_DiPO.odex": "460433b8ec27354f5b787d2382e7efaf",
+        "/system/app/Iap2ServerApp.apk": "fde208439f993986a60396e759797a01",
+        "/system/app/Iap2ServerApp.odex": "43c40662352937dd2c25a154dfa60b9d",
+        "/system/app/HKMC_Navi_ExSL.apk": "19559e742b1d21550aa8f0324e8e6d36",
+        "/system/app/HKMC_Navi_ExSL.odex": "0617cbf37079ec5c2e6408f1fb7862b9",
+        "/system/lib/libautoreceiver_infobank.so": "48ee793af8b86052503b8c952b034731"
+      }
+    },
+    {
+      "id": "kia-k5-hev-kr-v039",
+      "name": "Kia K5 Hybrid (DL3)",
+      "region": "Korea",
+      "chip": "TCC897x",
+      "product_prefix": "DL3HEV.KOR",
+      "firmware": "V039.001.260902",
+      "status": "in-progress",
+      "verified": [],
+      "notes": "Native Wi-Fi CarPlay sessions and built-in AAC/Opus converters. The audio-format recipe fits. The CarPlay bridge and turn-by-turn need builds for this firmware.",
+      "stock": {
+        "/system/app/HKMC_GPM.apk": "4805d9e0cafbbb4f0f622e033d4359c4",
+        "/system/app/HKMC_GPM.odex": "def8588772f648a6acedbed8ecdcd5d8",
+        "/system/app/HKMC_DiPO.apk": "ad9859a698f0ac3fbc1093ac21f61dbf",
+        "/system/app/HKMC_DiPO.odex": "b6c36634ebf49b45d84798b89cbfbf67",
+        "/system/app/Iap2ServerApp.apk": "fde208439f993986a60396e759797a01",
+        "/system/app/Iap2ServerApp.odex": "1252fd62faecba96941f2177bf36eb8b",
+        "/system/app/HKMC_Navi_ExSL.apk": "278641941999ea3b288ceae97a846f30",
+        "/system/app/HKMC_Navi_ExSL.odex": "bd758e94e85dc4e79ba13cd4a7b0f1fe",
+        "/system/lib/libautoreceiver_infobank.so": "48ee793af8b86052503b8c952b034731"
+      }
+    }
+  ]
+}

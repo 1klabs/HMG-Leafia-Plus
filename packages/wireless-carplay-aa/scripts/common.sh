@@ -1,0 +1,157 @@
+#!/system/bin/sh
+# wireless.carplay.aa - HMG Leafia Plus: Wireless CarPlay + Android Auto in one package.
+# Runs four parts in order; each keeps its own stock backup under
+# /data/nemesis/backup/<part> and its own log /data/nemesis/<part>.log:
+#   1 wireless.projection  wireless CarPlay/AA feature flags (slim: no Wi-Fi client,
+#                          no Wi-Fi menu, no Wi-Fi Direct - projection uses the hotspot)
+#   2 projection.tbt       turn-by-turn on the cluster/HUD (DiPO/Iap2 base for 4)
+#   3 wireless.carplay.bt  Bluetooth -> iAP2 bridge + Wi-Fi session patch for CarPlay
+#   4 carplay.wifi.audio   wireless CarPlay audio: AAC music, Opus Siri/calls/mic
+# Not included: TCP ADB (adb.tcp), the temporary debug logging, and Android Auto
+# car data (projection.cardata, EV-specific) - that installs separately on top of this.
+# Uninstall undoes the parts in reverse order, back to stock.
+# Supported: Kia EV6 (CVEV) and Hyundai Ioniq 5 (NEEV) on 260507 firmware.
+# Each part also checks the exact stock checksums before writing anything.
+export PATH=/data/nemesis/bin:/sbin:/vendor/bin:/system/sbin:/system/bin:/system/xbin
+LOG=/data/nemesis/wireless.carplay.aa.log
+PARTS="1_projection 2_tbt 3_bridge 4_audio"
+PARTS_REV="4_audio 3_bridge 2_tbt 1_projection"
+# the separate packages this replaces - they must be uninstalled first
+LEGACY="wireless.projection projection.tbt wireless.carplay.bt carplay.wifi.audio carplay.debuglog"
+# optional add-ons that sit on top of this package - uninstall them before this one
+ADDONS="projection.cardata"
+
+log() { echo "$1"; mkdir -p /data/nemesis 2>/dev/null; echo "$1" >> "$LOG" 2>/dev/null; true; }
+
+car_name() {
+    case "$(getprop ro.build.product 2>/dev/null)" in
+        CVEV.*) echo "Kia EV6" ;;
+        NEEV.*) echo "Hyundai Ioniq 5" ;;
+        *) return 1 ;;
+    esac
+}
+
+part_name() {
+    case "$1" in
+        1_projection) echo wireless.projection ;;
+        2_tbt) echo projection.tbt ;;
+        3_bridge) echo wireless.carplay.bt ;;
+        4_audio) echo carplay.wifi.audio ;;
+    esac
+}
+
+# run_part <dir> <script>: run one part's hook from inside its folder
+run_part() {
+    [ -f "comp/$1/scripts/$2.sh" ] || return 0
+    log "== $(part_name $1): $2"
+    ( cd "comp/$1" && /system/bin/sh "scripts/$2.sh" )
+}
+
+check_legacy() {
+    local _id _bad=0
+    for _id in $LEGACY; do
+        if [ -d "/data/nemesis/apps/$_id" ]; then
+            log "FAIL: separate package $_id is still installed"
+            _bad=1
+        fi
+    done
+    [ $_bad -eq 0 ] && return 0
+    log "Uninstall the separate packages first (newest first), reboot, then install this."
+    return 1
+}
+
+# every part remounts /system; find out now rather than half way through
+check_remount() {
+    if ! /system/xbin/nemesis remount rw >/dev/null 2>&1; then
+        log "FAIL: cannot remount /system rw - reboot the head unit and try again"
+        return 1
+    fi
+    /system/xbin/nemesis remount ro >/dev/null 2>&1
+    return 0
+}
+
+check_addons() {
+    local _id _bad=0
+    for _id in $ADDONS; do
+        if [ -d "/data/nemesis/apps/$_id" ]; then
+            log "FAIL: add-on $_id is installed on top of this package - uninstall it first"
+            _bad=1
+        fi
+    done
+    return $_bad
+}
+
+# ---- turn-by-turn safety: the cluster API it calls must exist on this firmware.
+# TBT only uses the standard cluster calls the built-in navigation uses, so a
+# car without a HUD is fine (the HUD frames simply have no receiver). A
+# firmware missing any of these calls would crash the projection apps instead.
+TBT_CLUSTER_CALLS="updateTBTInfo updateTBTSubInfo updateTBTSubInfo2C updateTBTTrapInfo updateTPTurnList updateTPTurnListNew updateTPCrossroadName updateTPFlexibleDestinationName updateLaneInfo updateOperationStatus responseNaviAliveStatus"
+check_cluster_api() {
+    local _f _m _miss=""
+    for _f in /system/framework/automotive.odex /system/framework/automotive.jar; do
+        [ -f "$_f" ] || continue
+        _miss=""
+        for _m in $TBT_CLUSTER_CALLS; do
+            grep -q "$_m" "$_f" 2>/dev/null || _miss="$_miss $_m"
+        done
+        [ -z "$_miss" ] && { log "cluster API ok ($_f)"; return 0; }
+    done
+    log "FAIL: cluster API missing on this firmware:${_miss:- automotive framework not found}"
+    return 1
+}
+# ---- failure help: on-screen message + automatic report for unknown head units
+toast() {
+    am broadcast -a com.hkmc.intent.action.TOAST \
+        -e com.hkmc.intent.extra.TOAST_MESSAGE "$1" \
+        --ez com.hkmc.intent.extra.TOAST_POPUPSHOWING true >/dev/null 2>&1 || true
+}
+
+# the USB drive the package came from (has NEMESIS.data and is writable)
+find_usb() {
+    local _d
+    for _d in /storage/usb0 /storage/usb1 /storage/usb2 /mnt/media_rw/usb0 /mnt/media_rw/usb1 /mnt/media_rw/usb2; do
+        [ -f "$_d/NEMESIS.data" ] || continue
+        if ( : > "$_d/.nemesis_wtest" ) 2>/dev/null; then
+            rm -f "$_d/.nemesis_wtest" 2>/dev/null
+            echo "$_d"
+            return 0
+        fi
+    done
+    return 1
+}
+
+REPORT_NAME=NEMESIS-report-wireless.carplay.aa
+
+# fail_unknown_unit <reason>: grab the report, tell the user, never touches /system
+fail_unknown_unit() {
+    local _usb _out _where
+    log "FAIL: $1"
+    if _usb=$(find_usb); then
+        _out="$_usb/$REPORT_NAME"
+        _where="USB drive: $REPORT_NAME"
+    else
+        _out="/data/nemesis/reports/$REPORT_NAME"
+        _where="$_out (no USB drive found)"
+    fi
+    log "collecting a head unit report into $_out"
+    if /system/bin/sh ./scripts/report.sh "$_out" "$1" >/dev/null 2>&1; then
+        log "report saved: $_where"
+    else
+        log "WARN: report could not be written to $_out"
+    fi
+    toast "Install failed, likely an undocumented head unit. Check your logs and see if there are files you can provide so this can work on more units. Report saved to $_where"
+    return 1
+}
+
+# uninstall_parts <list>: undo parts in the given order, stop at the first failure
+uninstall_parts() {
+    local _p
+    for _p in $1; do
+        if ! run_part "$_p" preun; then
+            log "FAIL: could not undo $(part_name $_p) - stopping so the rest stays consistent"
+            return 1
+        fi
+        run_part "$_p" postun || true
+    done
+    return 0
+}

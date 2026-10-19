@@ -1,0 +1,4 @@
+dist/
+payloads/
+packages/wireless-carplay-aa/comp/2_tbt/files*/
+packages/wireless-carplay-aa/comp/3_bridge/files*/

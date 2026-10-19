@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HMG Leafia Plus Compatibility</title>
+<meta name="description" content="Check whether your Hyundai/Kia/Genesis Gen5W head unit can run HMG Leafia Plus wireless CarPlay and Android Auto.">
+<style>
+:root {
+  --bg: #f6f5f1; --surface: #ffffff; --ink: #1d1f22; --muted: #5d636b; --line: #e2dfd7;
+  --accent: #0b6e4f; --accent-ink: #ffffff; --accent-soft: #e3f1ea;
+  --ok: #0b6e4f; --ok-soft: #e3f1ea; --native: #1f5fa8; --native-soft: #e4edf8;
+  --build: #9a5b00; --build-soft: #fbf0dc; --no: #a1262b; --no-soft: #f8e3e3;
+  --unknown: #5d636b; --unknown-soft: #ececea;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121416; --surface: #1b1e21; --ink: #ecebe7; --muted: #a3a8ae; --line: #2c3035;
+    --accent: #3fb68b; --accent-ink: #0d1411; --accent-soft: #17302a;
+    --ok: #4cc79a; --ok-soft: #17302a; --native: #7fb2ee; --native-soft: #1a2738;
+    --build: #e6b25c; --build-soft: #33281a; --no: #ef8a8e; --no-soft: #3a1f21;
+    --unknown: #a3a8ae; --unknown-soft: #26292d;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121416; --surface: #1b1e21; --ink: #ecebe7; --muted: #a3a8ae; --line: #2c3035;
+  --accent: #3fb68b; --accent-ink: #0d1411; --accent-soft: #17302a;
+  --ok: #4cc79a; --ok-soft: #17302a; --native: #7fb2ee; --native-soft: #1a2738;
+  --build: #e6b25c; --build-soft: #33281a; --no: #ef8a8e; --no-soft: #3a1f21;
+  --unknown: #a3a8ae; --unknown-soft: #26292d;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 var(--sans); }
+main { max-width: 920px; margin: 0 auto; padding: 32px 16px 64px; }
+header { margin-bottom: 28px; }
+.kicker { font: 600 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; margin: 10px 0 10px; letter-spacing: -.02em; }
+h2 { font-size: 20px; margin: 0 0 4px; }
+.lede { color: var(--muted); max-width: 640px; margin: 0; }
+section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px; margin: 18px 0; }
+.step { font: 600 12px/1 var(--mono); color: var(--muted); margin-bottom: 8px; }
+.sub { color: var(--muted); margin: 0 0 14px; }
+ol.steps { margin: 0 0 16px; padding-left: 20px; }
+ol.steps li { margin: 4px 0; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  font: 600 15px var(--sans); padding: 10px 16px; border-radius: 10px; cursor: pointer; text-decoration: none; }
+.btn.secondary { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.drop { border: 2px dashed var(--line); border-radius: 12px; padding: 26px 16px; text-align: center; color: var(--muted); transition: border-color .15s, background .15s; }
+.drop.over { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.drop strong { color: var(--ink); }
+.linkish { background: none; border: none; color: var(--accent); font: inherit; cursor: pointer; padding: 0; text-decoration: underline; }
+textarea { width: 100%; min-height: 90px; margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: 12px/1.4 var(--mono); padding: 10px; }
+.car { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 6px 0 16px; }
+.car div { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.car span { display: block; font: 600 11px/1.2 var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.car b { display: block; font-weight: 600; overflow-wrap: anywhere; }
+.overall { border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; font-weight: 600; }
+.parts { width: 100%; border-collapse: collapse; }
+.parts td { padding: 12px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+.parts td:first-child { padding-left: 0; width: 34%; font-weight: 600; }
+.parts small { display: block; color: var(--muted); font-weight: 400; }
+.chip { display: inline-block; font: 600 12px/1 var(--sans); padding: 6px 9px; border-radius: 999px; white-space: nowrap; margin-bottom: 6px; }
+.s-ok { color: var(--ok); background: var(--ok-soft); }
+.s-native { color: var(--native); background: var(--native-soft); }
+.s-build { color: var(--build); background: var(--build-soft); }
+.s-no { color: var(--no); background: var(--no-soft); }
+.s-unknown { color: var(--unknown); background: var(--unknown-soft); }
+.compat { width: 100%; border-collapse: collapse; font-size: 15px; }
+.compat th { text-align: left; font: 600 12px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); padding: 8px; border-bottom: 1px solid var(--line); }
+.compat td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.compat td:first-child { font-weight: 600; }
+.scroll { overflow-x: auto; }
+.hidden { display: none; }
+footer { color: var(--muted); font-size: 14px; margin-top: 28px; }
+footer a, .sub a, li a { color: var(--accent); }
+code { font: 13px var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 1px 5px; }
+.note { font-size: 14px; color: var(--muted); margin-top: 12px; }
+@media (max-width: 560px) {
+  .parts td:first-child { width: 42%; }
+  .compat thead { display: none; }
+  .compat tr { display: block; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .compat td { display: block; border: 0; padding: 2px 0; }
+  .compat td[data-label]::before { content: attr(data-label) " "; font: 600 11px var(--mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  section { padding: 18px 16px; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="kicker">HMG Leafia Plus · Gen5W</div>
+    <h1>Is your head unit ready for wireless CarPlay and Android Auto?</h1>
+    <p class="lede">Run a read-only kit on your Hyundai, Kia or Genesis Gen5W head unit, drop the report here, and see part by part what works on your firmware. Everything is checked in your browser.</p>
+  </header>
+
+  <section>
+    <div class="step">STEP 1</div>
+    <h2>Run the fingerprint kit</h2>
+    <p class="sub">Needs <a href="https://github.com/xwtk/hmg_nemesis">NEMESIS</a> on the head unit. The kit only reads; nothing on the car changes.</p>
+    <ol class="steps">
+      <li>Unzip the kit to the root of an exFAT or FAT32 USB drive.</li>
+      <li>With the car on, plug in the drive and tap <b>Yes</b> when NEMESIS asks to run it.</li>
+      <li>When it reports success, take <code>LEAFIA-REPORT.txt</code> from the drive.</li>
+    </ol>
+    <a class="btn" href="downloads/leafia-fingerprint-kit.zip" download>Download the fingerprint kit</a>
+    <p class="note">The report contains firmware IDs, checksums and patch-spot checks only: no VIN, serial numbers, phone or Wi-Fi names, accounts, keys or Kia/Hyundai code.</p>
+  </section>
+
+  <section>
+    <div class="step">STEP 2</div>
+    <h2>Check your report</h2>
+    <p class="sub">Nothing is uploaded. Or try a sample: <button class="linkish" data-sample="samples/ioniq5.txt">Ioniq 5 (US)</button> · <button class="linkish" data-sample="samples/k5.txt">K5 Hybrid (Korea)</button></p>
+    <div id="drop" class="drop">
+      <p><strong>Drop LEAFIA-REPORT.txt here</strong> or <label class="linkish" for="file">choose the file</label></p>
+      <input id="file" type="file" accept=".txt,text/plain" class="hidden">
+    </div>
+    <details>
+      <summary class="note" style="cursor:pointer">Or paste the report text</summary>
+      <textarea id="paste" placeholder="leafia-report 1 ..."></textarea>
+      <div class="row" style="margin-top:8px"><button class="btn secondary" id="pasteBtn">Check pasted text</button></div>
+    </details>
+  </section>
+
+  <section id="result" class="hidden" aria-live="polite">
+    <div class="step">RESULT</div>
+    <h2 id="carTitle">Your head unit</h2>
+    <div class="car" id="carFacts"></div>
+    <div class="overall" id="overall"></div>
+    <table class="parts"><tbody id="parts"></tbody></table>
+    <div class="row" style="margin-top:16px">
+      <a class="btn" id="share" target="_blank" rel="noopener">Share on GitHub</a>
+      <button class="btn secondary" id="copy">Copy report</button>
+    </div>
+    <p class="note">Sharing opens a pre-filled GitHub issue with this result and the report text, so support for more head units can be added. You can review it before posting.</p>
+  </section>
+
+  <section>
+    <div class="step">COMPATIBILITY</div>
+    <h2>Known head units</h2>
+    <p class="sub">Grows with every shared report.</p>
+    <div class="scroll"><table class="compat"><thead><tr><th>Car</th><th>Firmware</th><th>Chip</th><th>Status</th><th>Notes</th></tr></thead><tbody id="compat"></tbody></table></div>
+  </section>
+
+  <footer>
+    <p>HMG Leafia Plus is a community project (<a href="https://github.com/VysseCodes/HMG-Leafia-Plus">source</a>, GPL-3.0). It installs through <a href="https://github.com/xwtk/hmg_nemesis">NEMESIS</a> by xwtk (AGPL-3.0). Not affiliated with Hyundai, Kia, Genesis, Apple or Google. Modifying your head unit is at your own risk.</p>
+  </footer>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
