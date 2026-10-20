@@ -25,7 +25,7 @@ PROP_OFF=f
 SUM_TBT_DIPO_APK=21aec10793fa3847b299077d650b44d7
 SUM_TBT_IAP_APK=29a6a93954b02ac444a12802106b2b85
 # bridge build - the payload in files/
-SUM_DIPO_APK=43ddb49d8cbfd1be09f03dd0890d7245
+SUM_DIPO_APK=de39108149a363e252c7b4ea21b512f5
 SUM_IAP_APK=9595ffb7edc86ac396a29a3d931d8b3d
 
 # ---- car variant: picked from the firmware's own product id, then the stock
@@ -37,13 +37,13 @@ case "$(getprop ro.build.product 2>/dev/null)" in
         VARIANT=neev
         FILES=files_neev
         SUM_TBT_DIPO_APK=a9d02688931476cd93dc51c33a06380b
-        SUM_DIPO_APK=6476fbb6b3467f883d3d7c9768f84221
+        SUM_DIPO_APK=6e01be822a82cdb98f48314e8811c945
         ;;
     DL3HEV.KOR.*)
         VARIANT=dl3hev
         FILES=files_dl3hev
         SUM_TBT_DIPO_APK=bc216a2d220cdb3536ba763542c6d239
-        SUM_DIPO_APK=c369c99ce24c2deee14d45f69df0850c
+        SUM_DIPO_APK=437a7607ff48038d031fb291f94d57ba
         ;;
     *)
         VARIANT=ev6
