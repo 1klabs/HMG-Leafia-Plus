@@ -16,7 +16,7 @@ Native libraries are patched on the head unit with `lpatch` and the recipes in `
 `comp/2_tbt/files*` and `comp/3_bridge/files*` hold the projection app builds (`HKMC_DiPO`, `HKMC_GPM`, `HKMC_Navi_ExSL`, `Iap2ServerApp`, `libautoreceiver_infobank.so`). They are modified copies of manufacturer apps, so they are kept out of this repository.
 
 - **Where they come from:** the turn-by-turn builds come from the NEMESIS community package. The bridge builds are those plus the HMG Leafia Plus bridge code.
-- **Per-car folders:** `files_neev` holds the Ioniq 5 builds. They are the same code placed into that car's own app files.
+- **Per-car folders:** `files_neev` holds the Ioniq 5 builds: the same code placed into that car's own app files. `files_dl3hev` holds the Kia K5 Hybrid (Korea) builds: the same changes merged onto that firmware's own app code, which differs from the EV6's in places.
 
 To build the installable zip, point the build script at a folder that has the same layout:
 
@@ -24,4 +24,4 @@ To build the installable zip, point the build script at a folder that has the sa
 tools/build-package.sh /path/to/payloads
 ```
 
-`/path/to/payloads` must contain `2_tbt/files`, `2_tbt/files_neev`, `3_bridge/files` and `3_bridge/files_neev`.
+`/path/to/payloads` must contain `2_tbt/files`, `2_tbt/files_neev`, `2_tbt/files_dl3hev`, `3_bridge/files`, `3_bridge/files_neev` and `3_bridge/files_dl3hev`.

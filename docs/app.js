@@ -90,9 +90,11 @@ function verdict(r) {
   }
   parts.push({ name: "CarPlay wireless audio", state: audioState, why: audioWhy });
 
+  const built = v && (v.status === "supported" || v.status === "testing");
+  const tested = v && v.status === "supported";
   const bridgeOk = filesMatch(r, v, BRIDGE_FILES);
-  parts.push({ name: "CarPlay Bluetooth bridge", state: bridgeOk && v.status === "supported" ? "ok" : "build",
-    why: bridgeOk && v.status === "supported" ? "A tested build exists for these exact CarPlay apps." : "The CarPlay apps on this unit have no build yet. Sharing your report helps get one made." });
+  parts.push({ name: "CarPlay Bluetooth bridge", state: bridgeOk && built ? "ok" : "build",
+    why: bridgeOk && built ? (tested ? "A tested build exists for these exact CarPlay apps." : "A build exists for these exact CarPlay apps; it hasn't been tried on a real car yet.") : "The CarPlay apps on this unit have no build yet. Sharing your report helps get one made." });
 
   const apiKnown = TBT_CALLS.some((c) => c in r.api);
   const apiMissing = TBT_CALLS.filter((c) => r.api[c] === false);
@@ -100,7 +102,7 @@ function verdict(r) {
   let tbtState, tbtWhy;
   if (!apiKnown) { tbtState = "unknown"; tbtWhy = "Not in this report."; }
   else if (apiMissing.length) { tbtState = "no"; tbtWhy = "This firmware lacks cluster calls turn-by-turn needs: " + apiMissing.join(", ") + ". The package refuses to install it here."; }
-  else if (filesMatch(r, v, tbtFiles) && v.status === "supported") { tbtState = "ok"; tbtWhy = "Cluster API present and a tested build exists. No HUD? That's fine; the HUD frames just go unused."; }
+  else if (filesMatch(r, v, tbtFiles) && built) { tbtState = "ok"; tbtWhy = "Cluster API present and a " + (tested ? "tested build" : "build (not yet tried on a real car)") + " exists. No HUD? That's fine; the HUD frames just go unused."; }
   else { tbtState = "build"; tbtWhy = "Cluster API present, but these navigation/projection apps have no build yet."; }
   parts.push({ name: "Turn-by-turn on cluster / HUD", state: tbtState, why: tbtWhy });
 
@@ -108,6 +110,7 @@ function verdict(r) {
   let overall;
   if (!r.valid) overall = ["no", "This doesn't look like an HMG Leafia Plus report."];
   else if (allGood && v && v.status === "supported") overall = ["ok", "Supported: install the Wireless CarPlay and Android Auto package."];
+  else if (allGood && v && v.status === "testing") overall = ["ok", "Build ready, awaiting its first real-car test. You can install the package; uninstall puts everything back to stock."];
   else if (v && v.status === "in-progress") overall = ["build", "Support for " + v.name + " is in progress. Share your report to help."];
   else if (!hasWifi) overall = ["no", "This unit has no Wi-Fi module, so wireless projection isn't possible."];
   else overall = ["build", "Not supported yet. Share your report so a build can be made for this head unit."];
@@ -162,7 +165,8 @@ function renderCompat() {
     const cells = [["", v.name + " · " + v.region], ["Firmware", v.firmware], ["Chip", v.chip]];
     for (const [label, c] of cells) { const td = document.createElement("td"); td.textContent = c; if (label) td.dataset.label = label; tr.append(td); }
     const st = document.createElement("td");
-    st.append(chip(v.status === "supported" ? "ok" : v.status === "in-progress" ? "build" : "unknown"));
+    st.append(chip(v.status === "supported" || v.status === "testing" ? "ok" : v.status === "in-progress" ? "build" : "unknown"));
+    if (v.status === "testing") st.lastChild.textContent = "Testing";
     if (v.status === "in-progress") st.lastChild.textContent = "In progress";
     if (v.status === "supported") st.lastChild.textContent = "Supported";
     const notes = document.createElement("td");

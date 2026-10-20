@@ -23,7 +23,7 @@ SUM_LIB=48ee793af8b86052503b8c952b034731
 
 # ---- car variant: picked from the firmware's own product id, then the stock
 # checksums below must still match exactly before anything is written.
-#   CVEV.* = Kia EV6 (default)   NEEV.* = Hyundai Ioniq 5
+#   CVEV.* = Kia EV6 (default)   NEEV.* = Hyundai Ioniq 5   DL3HEV.KOR.* = Kia K5 Hybrid (Korea)
 FILES=files
 case "$(getprop ro.build.product 2>/dev/null)" in
     NEEV.*)
@@ -35,6 +35,17 @@ case "$(getprop ro.build.product 2>/dev/null)" in
         SUM_DIPO_ODEX=460433b8ec27354f5b787d2382e7efaf
         SUM_IAP_ODEX=43c40662352937dd2c25a154dfa60b9d
         SUM_NAVI_ODEX=0617cbf37079ec5c2e6408f1fb7862b9
+        ;;
+    DL3HEV.KOR.*)
+        VARIANT=dl3hev
+        FILES=files_dl3hev
+        SUM_GPM_APK=4805d9e0cafbbb4f0f622e033d4359c4
+        SUM_GPM_ODEX=def8588772f648a6acedbed8ecdcd5d8
+        SUM_DIPO_APK=ad9859a698f0ac3fbc1093ac21f61dbf
+        SUM_DIPO_ODEX=b6c36634ebf49b45d84798b89cbfbf67
+        SUM_IAP_ODEX=1252fd62faecba96941f2177bf36eb8b
+        SUM_NAVI_APK=278641941999ea3b288ceae97a846f30
+        SUM_NAVI_ODEX=bd758e94e85dc4e79ba13cd4a7b0f1fe
         ;;
     *)
         VARIANT=ev6
