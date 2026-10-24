@@ -6,6 +6,7 @@ _rev=$(installed_parts_rev)
 log "undoing: $_rev"
 uninstall_parts "$_rev" || exit 1
 rm -f "$PARTS_FILE"
+adb_net_restore
 sync
 log "all parts back to stock - reboot the head unit to finish"
 exit 0
