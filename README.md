@@ -35,6 +35,8 @@ Cars without a patch set yet get **basic mode**: only the wireless projection pa
 3. Download **HMG_Leafia_Plus_Wireless_CarPlay_AA-<version>.zip** from the [latest release](../../releases/latest) (or build it yourself with `tools/build-package.sh`). Each release lists SHA256 checksums.
 4. Unzip it onto the root of an empty exFAT or FAT32 USB drive (`NEMESIS.data` and `packages/`).
 5. Car on, plug in the drive and confirm the install. The head unit restarts when it's done; remove the drive. The installer renames `NEMESIS.data` to `NEMESIS.data.installed` so it can't run again by accident.
+   While it installs, CarPlay, Android Auto, the navigation and Bluetooth settings are stopped so none of them restarts against half-changed files; they start again before the restart. If an install is interrupted (for example the car is switched off), run the install again: every run, finished or failed, ends with those apps started again.
+   The first start after installing can take a minute or two longer than usual. Give it that before testing CarPlay or Android Auto.
 6. **Uninstall** any time from NEMESIS Manager (Packages → Uninstall), then restart: every file goes back to stock.
 
 **Optional: Wi-Fi client (testing).** By default the head unit's Wi-Fi only runs the hotspot that wireless CarPlay/Android Auto use. To also get the Wi-Fi menu and join a network (for example to reach ADB over your home Wi-Fi), put an empty file named `LEAFIA-WIFI-CLIENT` next to `NEMESIS.data` on the install drive. These units have one Wi-Fi radio, so whether a home network and wireless projection work at the same time is still being tested. Uninstalling turns it off again.

@@ -267,6 +267,49 @@ uninstall_parts() {
 # and wireless projection drops after ~60 s. adbd also reads persist.adb.tcp.port,
 # which gives the same ADB over network without touching eth0: switch to that.
 # What we changed is kept in $ADB_FILE so uninstall can put it back.
+# apps_hold <parts>: the apps whose files the parts swap. With Android up they are stopped (pm disable, which also
+# keeps persistent apps from restarting) for the swap, so none starts against half-changed files.
+# The list stays in HOLD_FILE until apps_release starts them again, which every way out of a run
+# does: a run that dies leaves them stopped, and running the package again ends with them started.
+# An earlier run's leftovers stay stopped and join this run's list. With Android down nothing is
+# running and pm is not available: nothing to do.
+HOLD_PKGS="com.google.android.projection.sink com.daudio.app.dipo com.tcc.iap2server com.mnsoft.navi com.android.btsettings"
+HOLD_FILE=/data/nemesis/wireless.carplay.aa.stopped
+android_up() { [ "$(getprop sys.boot_completed 2>/dev/null)" = 1 ]; }
+apps_hold() {
+    local _p
+    # only parts 2, 3 and 5 replace these apps' files (basic mode has none of them)
+    case " $1 " in *" 2_tbt "*|*" 3_bridge "*|*" 5_menu "*) ;; *) return 0 ;; esac
+    android_up || return 0
+    touch "$HOLD_FILE" 2>/dev/null || { log "WARN: cannot record stopped apps; not stopping them"; return 0; }
+    for _p in $HOLD_PKGS; do
+        pm path "$_p" >/dev/null 2>&1 || continue
+        # recorded before stopping, so a run that dies right after still starts it again
+        case " $(echo $(cat "$HOLD_FILE" 2>/dev/null)) " in *" $_p "*) ;; *) echo "$_p" >> "$HOLD_FILE" ;; esac
+        if pm disable "$_p" >/dev/null 2>&1; then log "stopped $_p for the file swap"; else log "WARN: could not stop $_p"; fi
+    done
+    return 0
+}
+apps_release() {
+    local _p
+    local _left=""
+    [ -f "$HOLD_FILE" ] || return 0
+    if ! android_up; then
+        log "WARN: apps stopped by an earlier run stay stopped until this runs with Android up"
+        return 0
+    fi
+    for _p in $(cat "$HOLD_FILE"); do
+        if pm enable "$_p" >/dev/null 2>&1; then log "started $_p again"; else _left="$_left $_p"; log "WARN: could not start $_p again"; fi
+    done
+    if [ -z "$_left" ]; then
+        rm -f "$HOLD_FILE"
+    else
+        echo "$_left" > "$HOLD_FILE"
+        toast "Some projection apps could not be started again. Run this install again to fix it."
+    fi
+    return 0
+}
+
 ADB_FILE=/data/nemesis/wireless.carplay.aa.adb
 adb_net_fix() {
     [ "$(getprop persist.service.adb.tcp.enable)" = 1 ] || return 0

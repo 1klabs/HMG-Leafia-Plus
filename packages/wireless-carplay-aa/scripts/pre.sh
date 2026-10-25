@@ -2,6 +2,8 @@
 . ./scripts/common.sh
 log "preinstall wireless.carplay.aa"
 [ -f BUILD ] && log "build $(cat BUILD)"
+# a refused install ends with any apps an earlier run left stopped started again
+trap '[ $? = 0 ] || apps_release' EXIT
 [ -x /system/xbin/nemesis ] || { log "FAIL: /system/xbin/nemesis missing"; exit 1; }
 for _p in $PARTS; do
     [ -d "comp/$_p/scripts" ] || { log "FAIL: payload part $_p missing"; exit 1; }
