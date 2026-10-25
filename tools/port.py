@@ -22,7 +22,7 @@ usage:
   port.py --variant NAME --prefix PRODUCT_PREFIX --name "Car name"
           --new-stock DIR --new-fw DIR
           [--ref-variant ev6] --ref-stock DIR --ref-fw DIR --ref-builds DIR
-          --out-builds DIR [--patches DIR] [--work DIR]
+          --out-builds DIR [--patches DIR] [--work DIR] [--lib-build FILE]
 
   *-stock    app/<App>.apk + app/<App>.odex + lib/libautoreceiver_infobank.so
   *-fw       the car's /system/framework (kit: LEAFIA/private/stock/framework)
@@ -183,6 +183,7 @@ def main():
     ap.add_argument('--ref-variant', default='ev6')
     ap.add_argument('--patches', default=os.path.join(ROOT, 'patches'))
     ap.add_argument('--work')
+    ap.add_argument('--lib-build', help='%s already patched for this car, when its stock one differs' % LIB)
     a = ap.parse_args()
     work = a.work or tempfile.mkdtemp(prefix='port-')
     os.makedirs(work, exist_ok=True)
@@ -195,8 +196,8 @@ def main():
             for ext in ('apk', 'odex'):
                 stock['/system/app/%s.%s' % (n, ext)] = md5(os.path.join(a.new_stock, 'app', '%s.%s' % (n, ext)))
     stock['/system/lib/' + LIB] = md5(os.path.join(a.new_stock, 'lib', LIB))
-    if stock['/system/lib/' + LIB] != md5(os.path.join(a.ref_stock, 'lib', LIB)):
-        sys.exit('STOP: %s differs from the reference car; it needs its own patch' % LIB)
+    if stock['/system/lib/' + LIB] != md5(os.path.join(a.ref_stock, 'lib', LIB)) and not a.lib_build:
+        sys.exit('STOP: %s differs from the reference car; it needs its own patch (--lib-build)' % LIB)
 
     # framework definitions of the new car, for the system-call check
     fwdir = os.path.join(work, 'fw')
@@ -282,7 +283,8 @@ def main():
         else:
             run('smali', 'a', '-a', '19', out, '-o', dex)
         run(LPATCH, 'zipadd', os.path.join(a.new_stock, 'app', n + '.apk'), dex, os.path.join(d, n + '.apk'))
-    shutil.copy(os.path.join(a.ref_builds, '2_tbt', files_dir(a.ref_variant), LIB), os.path.join(a.out_builds, '2_tbt', fd, LIB))
+    shutil.copy(a.lib_build or os.path.join(a.ref_builds, '2_tbt', files_dir(a.ref_variant), LIB),
+                os.path.join(a.out_builds, '2_tbt', fd, LIB))
     FILES.setdefault(a.variant, fd)
     run(sys.executable, os.path.join(HERE, 'mkpatches.py'), a.variant, a.new_stock, a.out_builds, a.patches)
     with open(os.path.join(a.patches, a.variant, 'stock'), 'w') as f:

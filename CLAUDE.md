@@ -44,9 +44,11 @@ The Korean sets (`patches/dl3hev`, `patches/neev_kr`) are kept but not in `cars`
 | `CVEV.USA.` | ev6 | Kia EV6 US 260507 | reference car |
 | `CVEV.CAN.` | ev6_ca | Kia EV6 Canada 260206 | same projection code (every `.odex`, AA lib, CarPlay libs) as US 260507; only the DiPO/GPM APKs differ, so its manifest points at the `ev6/` patches; not yet tested on a real car |
 | `NEEV.USA.` / `NEEV23.USA.` | neev | Hyundai Ioniq 5 US 2022/2023 | app code identical to EV6, different APK wrappers |
+| `NEEV.CAN.` | neev_ca | Hyundai Ioniq 5 Canada 260206 | apps ported with `port.py`; its AA library (a0bea1c4) differs from the US one, so the library patch was hand-ported (`neev_ca/libautoreceiver_infobank.tbt.lpd`); not yet tested on a real car |
 
 ## Gotchas learned the hard way
 
+- The AA library patch (from NEMESIS `projection.tbt`) moves the program headers to 0x1c4000, adds a 9th PT_LOAD with self-contained code, and hooks `sendVersionRequest`+0x12, `RdsType_IsValid` and `NavigationStatusEndpoint::routeMessage`+0xe8 (`b.w` into the new code). The new code reaches the library only through a 5-entry relative table at 0x1c4160 (two `navigationNextTurn*` thunks, two unnamed STLport string helpers, the return address). For a build with a different stock library, re-point that table and the hook; if the build inlined a helper, carry a copy of it in the new segment. `tools/port.py --lib-build` takes the result. Check the method first by rebuilding the US patched library from US stock byte for byte.
 - **Deodex with `baksmali x -a 18`**, against the car's own framework dir with the full BOOTCLASSPATH order (core, conscrypt, okhttp, core-junit, bouncycastle, ext, framework, framework2, telephony-common, voip-common, mms-common, android.policy, services, apache-xml, webviewchromium, automotive) plus every other framework odex. `-a 19` silently mis-maps instance fields (KitKat libcore Object fields) and skips classes.
 - Abstract Binder stubs implementing in-app interfaces can still deodex with wrong method names; compare against a known-good build before trusting a class.
 - System apps: PackageManager only verifies `AndroidManifest.xml`, so stock APK + injected `classes.dex` installs fine; delete the odex and dexopt (`dexopt --preopt apk odex m=y,u=n`).

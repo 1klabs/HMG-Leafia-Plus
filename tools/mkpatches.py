@@ -8,7 +8,8 @@ usage: mkpatches.py <variant> <stock dir> <payload dir> <out patches dir>
   <payload dir>  the modified builds: 2_tbt/<files>/..., 3_bridge/<files>/...
                  (<files> = files, files_neev, files_dl3hev for ev6/neev/dl3hev)
 
-Writes <out>/<variant>/*.lpd, <out>/common/*.lpd and <out>/<variant>/manifest.
+Writes <out>/<variant>/*.lpd, <out>/common/*.lpd and <out>/<variant>/manifest. A car whose
+stock library differs from the one common/ was made from gets <out>/<variant>/libautoreceiver_infobank.tbt.lpd.
 Each manifest line:  <part> <kind> <name> <patch> <expected md5 of the result>
 The expected md5 of an app is the APK `lpatch zipadd` builds on the head unit
 (stock APK + rebuilt classes.dex), computed here with the host build of lpatch.
@@ -50,9 +51,17 @@ def main():
                 run(LPATCH, 'delta', os.path.join(out, var, lpd), os.path.join(stock, 'app', n + '.odex'), rebuilt)
                 run(LPATCH, 'zipadd', os.path.join(stock, 'app', n + '.apk'), rebuilt, built)
                 lines.append('%s app %s %s/%s %s' % (part, n, var, lpd, md5(built)))
+        # the shared delta in common/ serves every car with the same stock library; a car
+        # whose library differs gets its own delta beside its app deltas
+        lib_new = os.path.join(pay, '2_tbt', fdir, LIB)
         lib_lpd = os.path.join(out, 'common', LIB.replace('.so', '.tbt.lpd'))
-        run(sys.executable, MKDELTA, os.path.join(stock, 'lib', LIB), os.path.join(pay, '2_tbt', fdir, LIB), lib_lpd)
-        lines.append('2_tbt file %s common/%s %s' % (LIB, os.path.basename(lib_lpd), md5(os.path.join(pay, '2_tbt', fdir, LIB))))
+        if os.path.exists(lib_lpd):
+            fits = subprocess.run([LPATCH, 'delta', lib_lpd, os.path.join(stock, 'lib', LIB), os.path.join(t, LIB)],
+                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
+            if not (fits and md5(os.path.join(t, LIB)) == md5(lib_new)):
+                lib_lpd = os.path.join(out, var, LIB.replace('.so', '.tbt.lpd'))
+        run(sys.executable, MKDELTA, os.path.join(stock, 'lib', LIB), lib_new, lib_lpd)
+        lines.append('2_tbt file %s %s %s' % (LIB, os.path.relpath(lib_lpd, out), md5(lib_new)))
     open(os.path.join(out, var, 'manifest'), 'w').write('\n'.join(lines) + '\n')
     print('\n'.join(lines))
 
