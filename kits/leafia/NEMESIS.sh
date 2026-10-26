@@ -200,7 +200,10 @@ ls -l /data/dalvik-cache 2>/dev/null | grep -E 'GPM|DiPO|Iap2|Navi_ExSL|PhonePro
 # it re-optimised into the cache. Only system@ cache names: never the names of installed apps.
 section "dalvik"
 say "BOOTCLASSPATH (this shell)=$BOOTCLASSPATH"
-grep -h 'export BOOTCLASSPATH' /init.rc 2>/dev/null | while IFS= read -r _l; do say "init.rc:${_l#*BOOTCLASSPATH}"; done
+# Android 4.4 sets it in init.environ.rc; older units in init.rc
+for _rc in /init.environ.rc /init.rc; do
+    grep -h 'export BOOTCLASSPATH' "$_rc" 2>/dev/null | while IFS= read -r _l; do say "${_rc##*/}:${_l#*BOOTCLASSPATH}"; done
+done
 for _p in dalvik.vm.dexopt-flags dalvik.vm.checkjni dalvik.vm.heapsize; do
     say "$_p=$(getprop $_p 2>/dev/null)"
 done

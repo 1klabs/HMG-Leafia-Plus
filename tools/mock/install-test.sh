@@ -38,7 +38,7 @@ done
 ZIP=$(cd "$(dirname "$1")" && pwd)/$(basename "$1"); PROD=$2; TD=$3; SRC=$4
 SH=${MOCK_SH:-/bin/sh}
 X=$(mktemp -d "${TMPDIR:-/tmp}/mock-hu.XXXX"); R=$X/root
-mkdir -p "$R/data/nemesis" "$R/storage/usb0" "$R/sys/class/net" "$X/stub" "$X/pkg"
+mkdir -p "$R/data/nemesis" "$R/data/dalvik-cache" "$R/storage/usb0" "$R/sys/class/net" "$X/stub" "$X/pkg"
 if [ "$MOCK_NO_WIFI" = 1 ]; then
     printf '#!/bin/sh\necho "<4>[   68.585868] failed to power up DHD generic adapter, max retry reached**"\n' > "$X/stub/dmesg"
 else
@@ -142,12 +142,22 @@ if "$SH" scripts/pre.sh > "$X/pre.log" 2>&1; then
     [ "$MOCK_USB_DESCRIPTOR" = 1 ] && echo "usb drive after install: $(ls "$R/storage/usb0" | tr '\n' ' ')"
     _n=$(grep -c '^disable ' "$X/pm.calls" 2>/dev/null || true); echo "apps stopped for the swap: ${_n:-0}"
     _l=$(stopped_left); [ -z "$_l" ] || if [ "$MOCK_ANDROID_DOWN" = 1 ]; then echo "apps still stopped after install (Android down: started on the next run with Android up): $_l"; else echo "apps left stopped after install: $_l"; ok=0; fi
+    # each Dalvik cache entry the install left must be the odex beside its APK
+    _dc=""
+    for _c in "$R"/data/dalvik-cache/system@app@*@classes.dex; do
+        [ -f "$_c" ] || continue
+        _n=${_c##*/system@app@}; _n=${_n%.apk@classes.dex}; _dc="$_dc $_n"
+        cmp -s "$_c" "$R/system/app/$_n.odex" || { echo "dalvik cache for $_n differs from its odex"; ok=0; }
+    done
+    echo "dalvik cache after install:${_dc:- none}"
     "$SH" scripts/preun.sh > "$X/preun.log" 2>&1 || true
     (cd "$R" && find system -type f -exec md5sum {} \; | sort -k2) > "$X/after.md5"
     if [ "$MOCK_ADB_TCP" = 1 ]; then
         _a=$(adb_props); echo "adb after uninstall: $_a"; [ "$_a" = "enable=1 port=" ] || ok=0
     fi
     _l=$(stopped_left); [ -z "$_l" ] || if [ "$MOCK_ANDROID_DOWN" = 1 ]; then echo "apps still stopped after uninstall (Android down: started on the next run with Android up): $_l"; else echo "apps left stopped after uninstall: $_l"; ok=0; fi
+    _left=$(ls "$R/data/dalvik-cache" | grep '^system@app@' | tr '\n' ' ')
+    [ -z "$_left" ] || { echo "dalvik cache left after uninstall: $_left"; ok=0; }
     if diff -q "$X/before.md5" "$X/after.md5" > /dev/null; then
         echo "UNINSTALL -> identical to stock"
     else

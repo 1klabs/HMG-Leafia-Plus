@@ -34,12 +34,21 @@ Cars without a patch set yet get **basic mode**: only the wireless projection pa
 2. Check your car on the [compatibility page](https://vyssecodes.github.io/HMG-Leafia-Plus/) with the Leafia kit.
 3. Download **HMG_Leafia_Plus_Wireless_CarPlay_AA-<version>.zip** from the [latest release](../../releases/latest) (or build it yourself with `tools/build-package.sh`). Each release lists SHA256 checksums.
 4. Unzip it onto the root of an empty exFAT or FAT32 USB drive (`NEMESIS.data` and `packages/`).
-5. Car on, plug in the drive and confirm the install. The head unit restarts when it's done; remove the drive. The installer renames `NEMESIS.data` to `NEMESIS.data.installed` so it can't run again by accident.
-   While it installs, CarPlay, Android Auto, the navigation and Bluetooth settings are stopped so none of them restarts against half-changed files; they start again before the restart. If an install is interrupted (for example the car is switched off), run the install again: every run, finished or failed, ends with those apps started again.
-   The first start after installing can take a minute or two longer than usual. Give it that before testing CarPlay or Android Auto.
-6. **Uninstall** any time from NEMESIS Manager (Packages → Uninstall), then restart: every file goes back to stock.
+5. Car on (ideally in Ready, see the quirks below), plug in the drive and confirm the install. It takes a few minutes. While it runs, CarPlay, Android Auto, the navigation and Bluetooth settings are stopped so none of them restarts against half-changed files; they start again before the restart.
+6. **When the head unit restarts, remove the drive.** Leaving it in can stop CarPlay or Android Auto from connecting the first time. The installer renames `NEMESIS.data` to `NEMESIS.data.installed` so it can't run again by accident.
+7. **Uninstall** any time from NEMESIS Manager (Packages → Uninstall), then restart: every file goes back to stock.
 
 **Optional: Wi-Fi client (testing).** By default the head unit's Wi-Fi only runs the hotspot that wireless CarPlay/Android Auto use. To also get the Wi-Fi menu and join a network (for example to reach ADB over your home Wi-Fi), put an empty file named `LEAFIA-WIFI-CLIENT` next to `NEMESIS.data` on the install drive. These units have one Wi-Fi radio, so whether a home network and wireless projection work at the same time is still being tested. Uninstalling turns it off again.
+
+### Known quirks
+
+- **Keep the USB drive out while testing.** A USB drive in the port makes the head unit try wired Android Auto, which can block the first wireless connection. Remove the install drive once the head unit restarts, and plug the Leafia kit in only after you've tried CarPlay or Android Auto.
+- **Switching the car off and on doesn't restart the head unit.** It stays on until the driver's door opens or a timeout passes. For a real restart, switch off, open the driver's door and wait for the screen to go dark, or hold the head unit's power button for about 10 seconds.
+- **Wireless CarPlay or Android Auto won't connect after an install** ("Phone not responding", or the phone joins the car's Wi-Fi and nothing happens): restart the head unit as above. If it still won't connect, pair again from scratch: on the phone forget the car in Android Auto (or CarPlay) settings, Bluetooth and Wi-Fi; on the car delete the phone.
+- **An interrupted install** (car switched off, drive pulled): run the install again. Every run, finished or failed, ends with CarPlay, Android Auto, the navigation and Bluetooth settings running.
+- **12 V battery during long sessions.** On an EV the 12 V battery is only charged while the car is in Ready. Installing and testing for a long time with the car on but not in Ready drains it; keep the car in Ready.
+- **"Activate" or Kia Connect prompts in the navigation** come from the car's connected services, not from this package.
+- **The Leafia kit only sees the last minute or so of the Android log.** When reporting a problem, run it right after the problem happens.
 
 Something wrong? Open an issue with the [problem form](../../issues/new?template=problem.yml); it walks you through the Leafia kit.
 

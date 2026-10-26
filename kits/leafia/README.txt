@@ -8,10 +8,12 @@ crash record). Use the one a maintainer asked for.
 1. Copy everything in this zip to the root of an exFAT/FAT32 USB drive with
    at least 200 MB free. No other NEMESIS files on the drive.
 2. Reporting a problem? Make it happen once just before (for CarPlay or
-   Android Auto: try to connect), and run the kit before turning the car
-   off: the Android log is lost when the car powers down.
+   Android Auto: try to connect), then run the kit within a minute or so:
+   the Android log only holds the last minute and is lost when the car
+   powers down. Plug the kit in only after trying to connect: a USB
+   drive in the port makes the head unit try wired Android Auto.
 3. Car on, plug in the drive, tap Yes. Wait for the success message
-   (1-2 minutes).
+   (1-2 minutes), then unplug the drive.
 4. The kit writes a LEAFIA folder on the drive:
 
    LEAFIA/public    Safe to share publicly.

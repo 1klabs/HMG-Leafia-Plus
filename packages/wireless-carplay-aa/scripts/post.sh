@@ -55,7 +55,7 @@ if [ "$MODE" = basic ]; then
         toast "Installed wireless Android Auto (basic mode). Turn-by-turn and wireless CarPlay need a build for this car: please share the report saved on the USB drive. Restarting now."
     fi
 else
-    toast "Installed. Restarting now - you can remove the USB drive."
+    toast "Installed. Restarting now: remove the USB drive while it restarts. Leaving it in can stop CarPlay or Android Auto connecting the first time."
 fi
 mirror_logs
 exec /system/bin/reboot
