@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-25",
+  "updated": "2026-10-27",
   "repo": "VysseCodes/HMG-Leafia-Plus",
   "variants": [
     {
@@ -206,6 +206,57 @@
         ],
         "/system/lib/libautoreceiver_infobank.so": [
           "84321500e6921b9222d5b91ff3ca75b2"
+        ]
+      }
+    },
+    {
+      "id": "kia-niro-ev-kr-260902",
+      "name": "Kia Niro EV",
+      "region": "Korea",
+      "chip": "TCC897x",
+      "product_prefix": "DEEVPBV.KOR.",
+      "years": "2022",
+      "firmware": "V039.001.260902",
+      "status": "testing",
+      "verified": [
+        "Wi-Fi scan works on a real unit",
+        "Sandbox install and uninstall on this firmware's own files"
+      ],
+      "notes": "The first Korean car with working Wi-Fi. Its projection apps are byte-identical to the Korean K5 Hybrid's, so it uses that build; awaiting the first real-car test.",
+      "stock": {
+        "/system/app/HKMC_GPM.apk": "4805d9e0cafbbb4f0f622e033d4359c4",
+        "/system/app/HKMC_GPM.odex": "def8588772f648a6acedbed8ecdcd5d8",
+        "/system/app/HKMC_DiPO.apk": "ad9859a698f0ac3fbc1093ac21f61dbf",
+        "/system/app/HKMC_DiPO.odex": "b6c36634ebf49b45d84798b89cbfbf67",
+        "/system/app/Iap2ServerApp.apk": "fde208439f993986a60396e759797a01",
+        "/system/app/Iap2ServerApp.odex": "1252fd62faecba96941f2177bf36eb8b",
+        "/system/app/HKMC_Navi_ExSL.apk": "278641941999ea3b288ceae97a846f30",
+        "/system/app/HKMC_Navi_ExSL.odex": "bd758e94e85dc4e79ba13cd4a7b0f1fe",
+        "/system/lib/libautoreceiver_infobank.so": "48ee793af8b86052503b8c952b034731"
+      },
+      "built": {
+        "/system/app/HKMC_BtSettings.apk": [
+          "93ecaa97597a79be2a10728e45c72b33",
+          "b977e268fbe73cb5637c4413647a7dea",
+          "cd98c36db6857ed174757c6010a36494",
+          "e7c90e78f45f7e6b9c90ddd7a238b566"
+        ],
+        "/system/app/HKMC_DiPO.apk": [
+          "485b12e96b6ff6e88cbfd5cc01de7cd5",
+          "f02aa12337d9814d44282d5b88ff4001"
+        ],
+        "/system/app/HKMC_GPM.apk": [
+          "08a29f343fbdb2abc7e11eb8a5698653"
+        ],
+        "/system/app/HKMC_Navi_ExSL.apk": [
+          "ffe7aa183e34beceab9233785857cc62"
+        ],
+        "/system/app/Iap2ServerApp.apk": [
+          "75d7fea4d2009be6aa5c840118f58c94",
+          "7e90fa7d8a161ade71e11dc15e56c410"
+        ],
+        "/system/lib/libautoreceiver_infobank.so": [
+          "c08410a8d32a615b1aa805cd8a243d52"
         ]
       }
     }

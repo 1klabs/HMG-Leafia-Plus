@@ -8,8 +8,8 @@ One folder per car, plus `common/`. The head unit rebuilds the modified projecti
 | `ev6_ca/` | Kia EV6, Canada (`CVEV.CAN.*`): same code as the US EV6, so its manifest uses the `ev6/` patches on Canada's own APKs | 260206 |
 | `neev/` | Hyundai Ioniq 5, US (`NEEV.USA.*`, `NEEV23.USA.*`) | 260507 |
 | `neev_ca/` | Hyundai Ioniq 5, Canada (`NEEV.CAN.*`): its Android Auto library differs from the US one, so it carries its own library delta | 260206 |
-| `dl3hev/` | Kia K5 Hybrid, Korea: kept, not in `cars` (no Korean unit has shown Wi-Fi hardware) | 260902 |
-| `neev_kr/` | Hyundai Ioniq 5, Korea: kept, not in `cars` (as above) | 260902 |
+| `dl3hev/` | Kia Niro EV, Korea (`DEEVPBV.KOR.*`): its projection apps are byte-identical to the K5 Hybrid Korea's, the car this set was made for. The K5 Hybrid itself isn't in `cars` (no Wi-Fi hardware) | 260902 |
+| `neev_kr/` | Hyundai Ioniq 5, Korea: kept, not in `cars` (no unit has shown Wi-Fi hardware) | 260902 |
 | `common/` | `libautoreceiver_infobank.so` for every car with the US stock library (a car with a different one has its own delta in its folder); `optional`: fixes applied wherever the stock file matches | |
 
 `cars` maps a firmware product id prefix (`ro.build.product`) to a folder and a car name. The installer reads it, so adding a car needs no script changes.
